@@ -49,7 +49,7 @@ namespace Akasha.Consumer.Workers
                             using var ms = new MemoryStream(result.Message.Value);
                             var match = ProtoBuf.Serializer.Deserialize<MatchRecord>(ms);
 
-                            await _repository.ProcessMessageAsync(match);
+                            await _repository.ProcessMessageAsync(match, stoppingToken);
 
                             consumer.Commit(result);
                             _logger.LogInformation($"Commited offset for match {match.MatchId}");

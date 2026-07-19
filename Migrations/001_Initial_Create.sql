@@ -45,6 +45,10 @@ CREATE TABLE IF NOT EXISTS stats.sorties (
 	jamming_seconds REAL,
 	detected_targets INT,
 
+	killed_by_unit TEXT,
+	killed_by_weapon TEXT,
+	killed_by_player BIGINT,
+
 	PRIMARY KEY (match_id, sortie_idx),
 	FOREIGN KEY (match_id) REFERENCES stats.matches(external_id) ON DELETE CASCADE
 );
@@ -53,12 +57,14 @@ CREATE INDEX IF NOT EXISTS idx_sorties_end_time ON stats.sorties(end_time);
 
 
 CREATE TABLE IF NOT EXISTS stats.kills (
-	kill_id SERIAL PRIMARY KEY,
 	match_id TEXT NOT NULL,
 	sortie_idx INT NOT NULL,
+	kill_idx INT NOT NULL,
 	killed_steam_id BIGINT,
 	killed_unit_name TEXT,
 	weapon TEXT,
+
+	PRIMARY KEY (match_id, sortie_idx, kill_idx),
 
 	CONSTRAINT fk_kills_sortie FOREIGN KEY (match_id, sortie_idx)
 		REFERENCES stats.sorties(match_id, sortie_idx) ON DELETE CASCADE
