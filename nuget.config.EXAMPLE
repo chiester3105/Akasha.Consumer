@@ -1,0 +1,17 @@
+<!--Enter username and token, then rename this file to nuget.config-->
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+	<packageSources>
+		<add key="github" value="https://nuget.pkg.github.com/chiester3105/index.json" />
+		<add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
+	</packageSources>
+	<packageSourceCredentials>
+		<github>
+			<!--USERNAME-->
+			<add key="Username" value="YOUR_USERNAME" />
+			<!--TOKEN-->
+			<add key="ClearTextPassword" value="PERSONAL_ACCESS_TOKEN" />
+		</github>
+	</packageSourceCredentials>
+</configuration>
+
