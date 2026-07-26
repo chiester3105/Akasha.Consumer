@@ -1,0 +1,1 @@
+ALTER TABLE stats.sorties ADD COLUMN sortie_id BIGSERIAL UNIQUE;
