@@ -2,9 +2,14 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 
-COPY ["Akasha.Consumer.csproj", "."]
-RUN dotnet restore "Akasha.Consumer.csproj"  
+COPY ["nuget.config", "."]
 
+COPY ["Akasha.Consumer.csproj", "."]
+
+ARG GITHUB_TOKEN
+ENV GITHUB_TOKEN=$GITHUB_TOKEN
+
+RUN dotnet restore "Akasha.Consumer.csproj" --configfile nuget.config
 
 COPY . .
 RUN dotnet build "Akasha.Consumer.csproj" -c Release -o /app/build
@@ -14,10 +19,5 @@ RUN dotnet publish "Akasha.Consumer.csproj" -c Release -o /app/publish /p:UseApp
 
 FROM mcr.microsoft.com/dotnet/runtime:8.0 AS final
 WORKDIR /app
-
-
 COPY --from=publish /app/publish .
-
-COPY --from=publish /app/publish/Migrations ./Migrations
-
-ENTRYPOINT [ "dotnet", "Akasha.Consumer.dll" ]
+ENTRYPOINT ["dotnet", "Akasha.Consumer.dll"]
