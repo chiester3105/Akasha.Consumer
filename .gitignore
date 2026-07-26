@@ -5,3 +5,5 @@ appsettings.Development.json
 appsettings.json
 nuget.config
 .gitattributes
+/Akasha.Consumer.Tests/obj
+/Akasha.Consumer.Tests/bin

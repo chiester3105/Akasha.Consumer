@@ -5,7 +5,17 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>dotnet-Irminsul-551cd0bf-ebc3-4c24-bdec-9a66b65e2be3</UserSecretsId>
+    <AssemblyAttribute> Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+		<Proj1>Akasha.Consumer.Tests</Proj1>
+    </AssemblyAttribute>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Akasha.Consumer.Tests\**" />
+    <Content Remove="Akasha.Consumer.Tests\**" />
+    <EmbeddedResource Remove="Akasha.Consumer.Tests\**" />
+    <None Remove="Akasha.Consumer.Tests\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Confluent.Kafka" Version="2.15.0" />
@@ -16,10 +26,14 @@
     <PackageReference Include="protobuf-net" Version="3.2.56" />
 	<PackageReference Include="Akasha.Contracts" Version="1.0.3" />
   </ItemGroup>
+	
+
 
   <ItemGroup>
     <Folder Include="IntegrationTests\" />
     <Folder Include="Mappers\" />
-    <Folder Include="Data\" />
   </ItemGroup>
 </Project>
+
+
+

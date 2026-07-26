@@ -46,13 +46,10 @@ namespace Akasha.Consumer.Workers
                             var result = consumer.Consume(stoppingToken);
                             if (result?.Message == null) continue;
 
-                            using var ms = new MemoryStream(result.Message.Value);
-                            var match = ProtoBuf.Serializer.Deserialize<MatchRecord>(ms);
-
-                            await _repository.ProcessMessageAsync(match, stoppingToken);
+                            var id = await ProcessMessageAsync(result, stoppingToken);
 
                             consumer.Commit(result);
-                            _logger.LogInformation($"Commited offset for match {match.MatchId}");
+                            _logger.LogInformation($"Commited offset for match {id}");
                         }
                         catch (ConsumeException ex) when (ex.Error.IsFatal)
                         {
@@ -81,6 +78,16 @@ namespace Akasha.Consumer.Workers
                     _logger.LogInformation("Kafka consumer closed");
                 }                
             }
+        }
+
+        internal async Task<string> ProcessMessageAsync(ConsumeResult<string, byte[]> consumeResult, CancellationToken ct)
+        {
+            using var ms = new MemoryStream(consumeResult.Message.Value);
+            var match = ProtoBuf.Serializer.Deserialize<MatchRecord>(ms);
+
+            await _repository.ProcessMessageAsync(match, ct);
+
+            return match.MatchId;
         }
     }
 }
