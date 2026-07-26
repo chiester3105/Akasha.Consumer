@@ -16,6 +16,13 @@ jobs:
    - name: Checkout
      uses: actions/checkout@v4
 
+   - name: Prepare nuget.config
+     run: |
+      cp nuget.config.EXAMPLE nuget.config
+      sed -i 's/YOUR_USERNAME/chiester3105/g' nuget.config
+      sed -i 's/PERSONAL_ACCESS_TOKEN/${{ secrets.GITHUB_TOKEN }}/g' nuget.config
+      cat nuget.config 
+
    - name: setup docker
      uses: docker/setup-buildx-action@v3
 
