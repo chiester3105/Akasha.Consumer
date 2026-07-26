@@ -1,56 +1,56 @@
 name: Publish docker image
 on:
- push:
-  tags:
-  - 'v*'
+  push:
+    tags:
+      - "v*"
 
 jobs:
- publish:
-  runs-on: ubuntu-latest
-  
-  permissions: 
-   contents: read
-   packages: write
+  publish:
+    runs-on: ubuntu-latest
 
-  steps:
-   - name: Checkout
-     uses: actions/checkout@v4
+    permissions:
+      contents: read
+      packages: write
 
-   - name: Prepare nuget.config
-     run: |
-      cp nuget.config.EXAMPLE nuget.config
-      sed -i 's/YOUR_USERNAME/chiester3105/g' nuget.config
-      sed -i 's/PERSONAL_ACCESS_TOKEN/${{ secrets.GITHUB_TOKEN }}/g' nuget.config
-      cat nuget.config 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-   - name: setup docker
-     uses: docker/setup-buildx-action@v3
+      - name: Prepare nuget.config
+        run: |
+          cp nuget.config.EXAMPLE nuget.config
+          sed -i 's/YOUR_USERNAME/chiester3105/g' nuget.config
+          sed -i 's/PERSONAL_ACCESS_TOKEN/${{ secrets.PAT_READ }}/g' nuget.config
+          cat nuget.config
 
-   - name: log in
-     uses: docker/login-action@v3
-     with:
-      registry: ghcr.io
-      username: ${{github.actor}}
-      password: ${{secrets.GITHUB_TOKEN}}
+      - name: setup docker
+        uses: docker/setup-buildx-action@v3
 
-   - name: metadata
-     id: meta
-     uses: docker/metadata-action@v5
-     with:
-      images: ghcr.io/${{github.repository}}/akasha-consumer
-      tags: |
-       type=semver,pattern={{version}}
-       type=semver,pattern={{major}}.{{minor}}
-       type=ref,event=branch
-       type=sha,format=short
+      - name: log in
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
 
-   - name: build and push
-     uses: docker/build-push-action@v5
-     with:
-      context: .
-      file: dockerfile
-      push: true
-      tags: ${{steps.meta.outputs.tags}}
-      labels: ${{steps.meta.outputs.labels}}
-      cache-from: type=gha
-      cache-to: type=gha,mode=max
+      - name: metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{github.repository}}/akasha-consumer
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=ref,event=branch
+            type=sha,format=short
+
+      - name: build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: dockerfile
+          push: true
+          tags: ${{steps.meta.outputs.tags}}
+          labels: ${{steps.meta.outputs.labels}}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
