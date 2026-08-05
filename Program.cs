@@ -24,7 +24,7 @@ namespace Akasha.Consumer
             using (var scope = host.Services.CreateScope())
             {
                 var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-                var connectionString = config["Postgres"];
+                var connectionString = config.GetConnectionString("Postgres");
 
                 var upgrader = DeployChanges.To.PostgresqlDatabase(connectionString)
                     .WithScriptsFromFileSystem("./Migrations")
